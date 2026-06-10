@@ -639,11 +639,43 @@ with st.expander("🔍 Raw Data Preview (filtered)", expanded=False):
     )
 
 
-# ── Footer ─────────────────────────────────────────────────────────────────────
+# ── DOWNLOAD SECTION ──────────────────────────────────────────────────────────
+
+st.markdown("---")
+
+st.markdown("""
+<div style='text-align:center;padding:15px;'>
+    <h4 style='color:#f0f0f0;margin-bottom:5px;'>
+        📥 Download Base Data
+    </h4>
+    <p style='color:#999;font-size:0.85rem;'>
+        Export the currently filtered sales data in CSV format
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+st.info("📥 Need the source data? Click the 'Download Base CSV File' button below.")
+
+col1, col2, col3 = st.columns([2,2,2])
+
+with col2:
+    st.download_button(
+        label="⬇ Download Base CSV File",
+        data=csv_bytes,
+        file_name="ENTOD_Sales_Data.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
+
 st.markdown("<br>", unsafe_allow_html=True)
+
+# ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown(
-    "<p style='text-align:center; color:#333; font-size:0.75rem;'>"
-    "© 2026 ENTOD Pharmaceuticals · Sales Insight Dashboard · "
-    "Quality, Innovation & Research Since 1977</p>",
+    f"""
+    <div style='text-align:center;color:#666;font-size:12px;padding:10px;'>
+        © 2026 ENTOD Pharmaceuticals | Sales Intelligence Dashboard<br>
+        Data Records: {len(df):,} | Last Refresh: 10 AM & 5 PM Daily
+    </div>
+    """,
     unsafe_allow_html=True,
 )
