@@ -39,7 +39,7 @@ html, body, [class*="css"] {
     display: inline-block;
     white-space: nowrap;
     /* one full message every 8 seconds, pauses feel natural */
-    animation: slide 8s ease-in-out infinite;
+    animation: slide 12s ease-in-out infinite;
     color: #fff;
     font-weight: 600;
     font-size: 0.82rem;
@@ -306,10 +306,10 @@ REDS   = [[0,"#3a0000"],[0.4,"#990000"],[0.7,RED],[1,"#ff6060"]]
 BASE_LAYOUT = dict(
     paper_bgcolor=PAPER, plot_bgcolor=BG,
     font=dict(color=FONT, family="Inter", size=11),
-    margin=dict(l=8, r=8, t=16, b=8),
     hoverlabel=dict(bgcolor="#1a1a1a", bordercolor="#333",
                     font=dict(color="#eee", size=12)),
 )
+DEFAULT_MARGIN = dict(l=8, r=8, t=16, b=8)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -332,6 +332,21 @@ else:
 
 avg_hq = total_amt / num_hqs if num_hqs else 0
 
+# ── extra KPIs for second row ──────────────────────────────────────────────
+state_rev_all = df.groupby("State Name")["Sales Amt"].sum()
+top_state     = state_rev_all.idxmax() if not state_rev_all.empty else "—"
+top_state_pct = (state_rev_all.max() / total_amt * 100) if total_amt else 0
+
+prod_rev_all  = df.groupby("Product Name")["Sales Amt"].sum()
+top_product   = prod_rev_all.idxmax() if not prod_rev_all.empty else "—"
+top_product_s = top_product[:16] + "…" if len(str(top_product)) > 16 else top_product
+
+months_covered = df["Month_Period"].nunique()
+
+nonzero_qty = df[df["Sales Qty"] > 0]
+avg_order_value = (nonzero_qty["Sales Amt"].sum() / nonzero_qty["Sales Qty"].sum()
+                    ) if nonzero_qty["Sales Qty"].sum() else 0
+
 sec("📊", "Key Performance Indicators")
 cols = st.columns(6)
 kpis = [
@@ -343,6 +358,28 @@ kpis = [
     ("🏙️", "Avg Revenue / HQ",    fmt_inr(avg_hq),     "Per territory",        ""),
 ]
 for col, (icon, label, value, sub, extra_cls) in zip(cols, kpis):
+    sm = " sm" if len(str(value)) > 9 else ""
+    with col:
+        st.markdown(f"""
+        <div class="kpi-wrap">
+            <div class="kpi-icon">{icon}</div>
+            <div class="kpi-label">{label}</div>
+            <div class="kpi-value{sm} {extra_cls}">{value}</div>
+            <div class="kpi-sub">{sub}</div>
+        </div>""", unsafe_allow_html=True)
+
+st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
+cols2 = st.columns(6)
+kpis2 = [
+    ("🏆", "Top State",            str(top_state),    f"{top_state_pct:.1f}% of revenue", ""),
+    ("⭐", "Top Product",          str(top_product_s), "By revenue",                       ""),
+    ("💵", "Avg Order Value",      fmt_inr(avg_order_value), "Per unit sold",              ""),
+    ("📅", "Months Covered",       str(months_covered), "In current view",                ""),
+    ("🗺️", "States Covered",       str(df["State Name"].nunique()), "Active states",      ""),
+    ("🏢", "Divisions",            str(df["Division Name"].nunique()), "Business divisions", ""),
+]
+for col, (icon, label, value, sub, extra_cls) in zip(cols2, kpis2):
     sm = " sm" if len(str(value)) > 9 else ""
     with col:
         st.markdown(f"""
@@ -378,13 +415,13 @@ with cl:
         fill="tozeroy", fillcolor="rgba(245,15,18,0.06)",
         hovertemplate="<b>%{x}</b><br>%{y:,.0f}<extra></extra>",
     ))
-    fig.update_layout(**BASE_LAYOUT, height=270,
+    fig.update_layout(**BASE_LAYOUT, height=270, margin=DEFAULT_MARGIN,
         xaxis=dict(showgrid=False, tickangle=-40, tickfont=dict(size=9)),
         yaxis=dict(showgrid=True, gridcolor=GRID, tickformat=",.0f",
                    title=dict(text="Revenue (₹)", font=dict(size=10))),
         hovermode="x unified",
     )
-    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig, width='stretch', config={"displayModeBar": False})
 
 with cr:
     clabel("Month-over-Month Growth %")
@@ -397,12 +434,12 @@ with cr:
         textposition="outside", textfont=dict(size=8, color=FONT),
         hovertemplate="<b>%{x}</b><br>%{y:.1f}%<extra></extra>",
     ))
-    fig2.update_layout(**BASE_LAYOUT, height=270,
+    fig2.update_layout(**BASE_LAYOUT, height=270, margin=DEFAULT_MARGIN,
         xaxis=dict(showgrid=False, tickangle=-40, tickfont=dict(size=9)),
         yaxis=dict(showgrid=True, gridcolor=GRID,
                    zeroline=True, zerolinecolor="#333", zerolinewidth=1),
     )
-    st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig2, width='stretch', config={"displayModeBar": False})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -429,7 +466,7 @@ with cl2:
         yaxis=dict(showgrid=False, tickfont=dict(size=9)),
         margin=dict(l=8, r=64, t=16, b=8),
     )
-    st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig3, width='stretch', config={"displayModeBar": False})
 
 with cr2:
     clabel("Top 15 States by Revenue")
@@ -448,7 +485,7 @@ with cr2:
         yaxis=dict(showgrid=False, tickfont=dict(size=9)),
         margin=dict(l=8, r=64, t=16, b=8),
     )
-    st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig4, width='stretch', config={"displayModeBar": False})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -489,7 +526,7 @@ with cl3:
                    title=dict(text="Qty (Lacs)", font=dict(size=9))),
         margin=dict(l=8, r=10, t=16, b=56),
     )
-    st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig5, width='stretch', config={"displayModeBar": False})
 
 with cr3:
     clabel("Division-wise Revenue Share")
@@ -512,9 +549,9 @@ with cr3:
         font=dict(size=14, color="#e0e0e0", family="Inter"),
     )
     fig6.update_layout(**BASE_LAYOUT, height=320, showlegend=False,
-        margin=dict(l=8, r=8, t=16, b=8),
+        margin=DEFAULT_MARGIN,
     )
-    st.plotly_chart(fig6, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig6, width='stretch', config={"displayModeBar": False})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -550,7 +587,7 @@ with cl4:
         hovermode="x unified",
         margin=dict(l=8, r=8, t=16, b=40),
     )
-    st.plotly_chart(fig7, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig7, width='stretch', config={"displayModeBar": False})
 
 with cr4:
     clabel("Top Head Quarters — Revenue Ranking")
@@ -565,7 +602,7 @@ with cr4:
     hq_tbl["Revenue"] = hq_tbl["Revenue"].apply(fmt_inr)
     hq_tbl["Qty"]     = hq_tbl["Qty"].apply(lambda x: f"{int(x):,}")
     hq_tbl.columns   = ["Head Quarter", "Revenue", "Qty Sold", "SKUs"]
-    st.dataframe(hq_tbl, use_container_width=True, height=300)
+    st.dataframe(hq_tbl, width='stretch', height=300)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -593,13 +630,13 @@ with cl5:
         ),
         hovertemplate="<b>%{text}</b><br>Qty: %{x:,}<br>Revenue: ₹%{y:,.0f}<extra></extra>",
     ))
-    fig8.update_layout(**BASE_LAYOUT, height=300,
+    fig8.update_layout(**BASE_LAYOUT, height=300, margin=DEFAULT_MARGIN,
         xaxis=dict(showgrid=True, gridcolor=GRID,
                    title=dict(text="Sales Qty", font=dict(size=10))),
         yaxis=dict(showgrid=True, gridcolor=GRID,
                    title=dict(text="Revenue (₹)", font=dict(size=10))),
     )
-    st.plotly_chart(fig8, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig8, width='stretch', config={"displayModeBar": False})
 
 with cr5:
     clabel("Top 10 Head Qtrs — Revenue vs Qty")
@@ -629,7 +666,7 @@ with cr5:
                     bordercolor="#333", borderwidth=1),
         barmode="group",
     )
-    st.plotly_chart(fig9, use_container_width=True, config={"displayModeBar": False})
+    st.plotly_chart(fig9, width='stretch', config={"displayModeBar": False})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -640,7 +677,7 @@ st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 with st.expander("🔍 Raw Data Preview (filtered)", expanded=False):
     preview = df.drop(columns=["Month_Period","Month_Label"], errors="ignore")
     st.caption(f"Showing first 1,000 rows of **{len(preview):,}** filtered records.")
-    st.dataframe(preview.head(1_000), use_container_width=True)
+    st.dataframe(preview.head(1_000), width='stretch')
     st.markdown("---")
     csv_bytes = preview.to_csv(index=False).encode("utf-8")
     st.download_button(
