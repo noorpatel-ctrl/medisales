@@ -138,6 +138,18 @@ div[data-testid="stMetric"] { background: transparent; }
     background: #3a0000 !important;
     color: #ff6666 !important;
 }
+
+/* ── Precision alignment fixes ── */
+div[data-testid="column"] { padding: 0 4px; }
+div[data-testid="stHorizontalBlock"] { gap: 12px; }
+.rank-badge {
+    display:inline-grid; place-items:center; width:20px; height:20px;
+    border-radius:6px; background:#3a0000; color:#f50f12;
+    font-weight:800; font-size:10.5px;
+}
+[data-testid="stDataFrame"] table td:first-child,
+[data-testid="stDataFrame"] table th:first-child { text-align:center; }
+.stMultiSelect, .stDownloadButton { margin-bottom: 2px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -598,11 +610,19 @@ with cr4:
           .sort_values("Revenue", ascending=False)
           .head(15).reset_index(drop=True)
     )
-    hq_tbl.index    += 1
+    hq_tbl.insert(0, "#", range(1, len(hq_tbl) + 1))
     hq_tbl["Revenue"] = hq_tbl["Revenue"].apply(fmt_inr)
     hq_tbl["Qty"]     = hq_tbl["Qty"].apply(lambda x: f"{int(x):,}")
-    hq_tbl.columns   = ["Head Quarter", "Revenue", "Qty Sold", "SKUs"]
-    st.dataframe(hq_tbl, width='stretch', height=300)
+    hq_tbl.columns    = ["#", "Head Quarter", "Revenue", "Qty Sold", "SKUs"]
+    st.dataframe(
+        hq_tbl, width='stretch', height=300, hide_index=True,
+        column_config={
+            "#": st.column_config.NumberColumn("#", width="small"),
+            "Revenue": st.column_config.TextColumn("Revenue", width="small"),
+            "Qty Sold": st.column_config.TextColumn("Qty Sold", width="small"),
+            "SKUs": st.column_config.NumberColumn("SKUs", width="small"),
+        },
+    )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
