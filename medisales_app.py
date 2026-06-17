@@ -3,6 +3,38 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+# ── Professional SVG icon constants (Heroicons stroke style) ──────────────────
+_S = "stroke='#f50f12' stroke-width='1.6'"
+_SB = "stroke='#f50f12' stroke-width='1.8'"
+_H = "xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'"
+
+def _svg(paths, w=22, sw="1.6"):
+    s = sw.replace(".", "_")
+    return (f"<svg {_H} width='{w}' height='{w}' "
+            f"stroke='#f50f12' stroke-width='{sw}'>{paths}</svg>")
+
+ICO_REVENUE   = _svg("<circle cx='12' cy='12' r='9'/><path stroke-linecap='round' d='M12 7v1m0 8v1m-3-5h4a1.5 1.5 0 0 1 0 3H9m0 0h6M9 12h4a1.5 1.5 0 0 0 0-3H9v3Z'/>")
+ICO_QTY       = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M20 7l-8-4-8 4m16 0v10l-8 4m0-14v14M4 7v10l8 4'/>")
+ICO_PILL      = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M9.5 3.5a6 6 0 0 1 8.485 8.485L5.984 14.015A6 6 0 0 1 9.5 3.5Zm5 17a6 6 0 0 1-8.485-8.485L18.016 9.98A6 6 0 0 1 14.5 20.5Z'/>")
+ICO_PIN       = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M12 2C8.686 2 6 4.686 6 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.314-2.686-6-6-6Zm0 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z'/>")
+ICO_TRENDLINE = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M3 17l5-5 4 4 9-9M21 7h-4V3'/>")
+ICO_BUILDING  = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M3 21h18M9 21V9l6-4v16M3 21V11l6-2M15 21V5'/>")
+ICO_TROPHY    = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M6 3h12M6 3v6a6 6 0 0 0 12 0V3M6 3H4a2 2 0 0 0 0 4h2m12 0h2a2 2 0 0 0 0-4h-2m-6 12v3m0 0H9m3 0h3'/>")
+ICO_STAR      = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z'/>")
+ICO_BANKNOTE  = _svg("<rect x='2' y='6' width='20' height='12' rx='2'/><path stroke-linecap='round' d='M12 10v4m-2-2h4'/>")
+ICO_CALENDAR  = _svg("<rect x='3' y='4' width='18' height='18' rx='2'/><path stroke-linecap='round' d='M16 2v4M8 2v4M3 10h18'/>")
+ICO_MAP       = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z'/><path stroke-linecap='round' d='M9 3v15m6-12v15'/>")
+ICO_OFFICE    = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M3 21h18V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16Zm6 0V13h6v8'/><path stroke-linecap='round' d='M9 7h2m4 0h-2M9 11h2m4 0h-2'/>")
+
+# Section icons (15px)
+SICO_KPI   = _svg("<path stroke-linecap='round' d='M3 3v18h18'/><path stroke-linecap='round' d='M7 16l4-4 4 4 4-6'/>", w=15, sw="1.8")
+SICO_TREND = _svg("<path stroke-linecap='round' d='M3 17l5-5 4 4 9-9M21 7h-4V3'/>", w=15, sw="1.8")
+SICO_PERF  = _svg("<path stroke-linecap='round' d='M6 3h12M6 3v6a6 6 0 0 0 12 0V3M6 3H4a2 2 0 0 0 0 4h2m12 0h2a2 2 0 0 0 0-4h-2m-6 12v3m0 0H9m3 0h3'/>", w=15, sw="1.8")
+SICO_TERR  = _svg("<path stroke-linecap='round' d='M12 2C8.686 2 6 4.686 6 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.314-2.686-6-6-6Zm0 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z'/>", w=15, sw="1.8")
+SICO_DIV   = _svg("<rect x='8' y='2' width='8' height='4' rx='1'/><rect x='3' y='4' width='18' height='17' rx='2'/><path stroke-linecap='round' d='M8 11h8M8 15h5'/>", w=15, sw="1.8")
+SICO_ADV   = _svg("<path stroke-linecap='round' stroke-linejoin='round' d='M9.5 3.5L14 8m-4.5-4.5l-3 3 6 6 3-3-6-6ZM4 20h16M12 14v6'/>", w=15, sw="1.8")
+
+
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="ENTOD Sales Insight",
@@ -17,6 +49,21 @@ LOGO_SRC = "data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTE
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Kill Streamlit top whitespace ── */
+#root > div:first-child { margin-top: 0 !important; }
+.block-container {
+    padding-top: 0.6rem !important;
+    padding-bottom: 1rem !important;
+    max-width: 100% !important;
+}
+header[data-testid="stHeader"] {
+    height: 0 !important;
+    min-height: 0 !important;
+    display: none !important;
+}
+div[data-testid="stToolbar"] { display: none !important; }
+.stDeployButton { display: none !important; }
 
 /* ── Base ── */
 html, body, [class*="css"] {
@@ -65,7 +112,8 @@ html, body, [class*="css"] {
     border-top-color: #ff4444;
     box-shadow: 0 4px 20px rgba(245,15,18,0.15);
 }
-.kpi-icon  { font-size: 1.5rem; line-height: 1; margin-bottom: 6px; }
+.kpi-icon  { height:26px; display:flex; align-items:center; justify-content:center; margin-bottom:7px; }
+.kpi-icon svg { display:block; }
 .kpi-label {
     font-size: 0.65rem; font-weight: 600; color: #666;
     letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
@@ -95,14 +143,25 @@ html, body, [class*="css"] {
     font-weight: 500; letter-spacing: 0.02em;
 }
 
-/* ── Sidebar ── */
+/* ── Sidebar — narrow ── */
 [data-testid="stSidebar"] {
     background: #111 !important;
     border-right: 1px solid #1f1f1f !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    width: 200px !important;
+}
+[data-testid="stSidebar"] > div:first-child {
+    width: 200px !important;
+    padding: 0.75rem 0.65rem !important;
 }
 [data-testid="stSidebar"] .stMarkdown p,
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] .stCaption { color: #888 !important; }
+[data-testid="stSidebar"] .stCaption {
+    color: #888 !important;
+    font-size: 11.5px !important;
+}
+[data-testid="stSidebar"] .stMultiSelect { font-size: 11px !important; }
 
 /* ── Sidebar logo block ── */
 .sb-logo-wrap {
@@ -359,15 +418,15 @@ nonzero_qty = df[df["Sales Qty"] > 0]
 avg_order_value = (nonzero_qty["Sales Amt"].sum() / nonzero_qty["Sales Qty"].sum()
                     ) if nonzero_qty["Sales Qty"].sum() else 0
 
-sec("📊", "Key Performance Indicators")
+sec(SICO_KPI)
 cols = st.columns(6)
 kpis = [
-    ("💰", "Total Revenue",       fmt_inr(total_amt),  "Filtered period",      ""),
-    ("📦", "Units Sold",          f"{total_qty:,.0f}", "Sales quantity",       ""),
-    ("💊", "Active Products",     str(num_products),   "Unique SKUs",          ""),
-    ("📍", "Active Territories",  str(num_hqs),        "Head quarters",        ""),
-    ("📈", "MoM Revenue Growth",  mom_s,               "vs previous month",    mom_c),
-    ("🏙️", "Avg Revenue / HQ",    fmt_inr(avg_hq),     "Per territory",        ""),
+    (ICO_REVENUE, "Total Revenue",       fmt_inr(total_amt),  "Filtered period",      ""),
+    (ICO_QTY, "Units Sold",          f"{total_qty:,.0f}", "Sales quantity",       ""),
+    (ICO_PILL, "Active Products",     str(num_products),   "Unique SKUs",          ""),
+    (ICO_PIN, "Active Territories",  str(num_hqs),        "Head quarters",        ""),
+    (ICO_TRENDLINE, "MoM Revenue Growth",  mom_s,               "vs previous month",    mom_c),
+    (ICO_BUILDING, "Avg Revenue / HQ",    fmt_inr(avg_hq),     "Per territory",        ""),
 ]
 for col, (icon, label, value, sub, extra_cls) in zip(cols, kpis):
     sm = " sm" if len(str(value)) > 9 else ""
@@ -384,12 +443,12 @@ st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 
 cols2 = st.columns(6)
 kpis2 = [
-    ("🏆", "Top State",            str(top_state),    f"{top_state_pct:.1f}% of revenue", ""),
-    ("⭐", "Top Product",          str(top_product_s), "By revenue",                       ""),
-    ("💵", "Avg Order Value",      fmt_inr(avg_order_value), "Per unit sold",              ""),
-    ("📅", "Months Covered",       str(months_covered), "In current view",                ""),
-    ("🗺️", "States Covered",       str(df["State Name"].nunique()), "Active states",      ""),
-    ("🏢", "Divisions",            str(df["Division Name"].nunique()), "Business divisions", ""),
+    (ICO_TROPHY, "Top State",            str(top_state),    f"{top_state_pct:.1f}% of revenue", ""),
+    (ICO_STAR, "Top Product",          str(top_product_s), "By revenue",                       ""),
+    (ICO_BANKNOTE, "Avg Order Value",      fmt_inr(avg_order_value), "Per unit sold",              ""),
+    (ICO_CALENDAR, "Months Covered",       str(months_covered), "In current view",                ""),
+    (ICO_MAP, "States Covered",       str(df["State Name"].nunique()), "Active states",      ""),
+    (ICO_OFFICE, "Divisions",            str(df["Division Name"].nunique()), "Business divisions", ""),
 ]
 for col, (icon, label, value, sub, extra_cls) in zip(cols2, kpis2):
     sm = " sm" if len(str(value)) > 9 else ""
@@ -409,7 +468,7 @@ st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
 # TREND  +  MoM GROWTH
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec("📈", "Trend Analysis")
+sec(SICO_TREND)
 trend = (df.groupby("Month_Period", as_index=False)["Sales Amt"]
            .sum().sort_values("Month_Period"))
 trend["Label"] = trend["Month_Period"].apply(lambda p: pd.Period(p).strftime("%b %Y"))
@@ -433,7 +492,19 @@ with cl:
                    title=dict(text="Revenue (₹)", font=dict(size=10))),
         hovermode="x unified",
     )
-    st.plotly_chart(fig, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 with cr:
     clabel("Month-over-Month Growth %")
@@ -451,14 +522,26 @@ with cr:
         yaxis=dict(showgrid=True, gridcolor=GRID,
                    zeroline=True, zerolinecolor="#333", zerolinewidth=1),
     )
-    st.plotly_chart(fig2, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig2, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TOP PRODUCTS  +  TOP STATES
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec("🏆", "Product & State Performance")
+sec(SICO_PERF)
 cl2, cr2 = st.columns(2)
 
 with cl2:
@@ -478,7 +561,19 @@ with cl2:
         yaxis=dict(showgrid=False, tickfont=dict(size=9)),
         margin=dict(l=8, r=64, t=16, b=8),
     )
-    st.plotly_chart(fig3, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig3, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 with cr2:
     clabel("Top 15 States by Revenue")
@@ -497,14 +592,26 @@ with cr2:
         yaxis=dict(showgrid=False, tickfont=dict(size=9)),
         margin=dict(l=8, r=64, t=16, b=8),
     )
-    st.plotly_chart(fig4, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig4, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HQ BAR CHART  +  DIVISION DONUT
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec("📍", "Territory & Division Breakdown")
+sec(SICO_TERR)
 cl3, cr3 = st.columns(2)
 
 with cl3:
@@ -538,7 +645,19 @@ with cl3:
                    title=dict(text="Qty (Lacs)", font=dict(size=9))),
         margin=dict(l=8, r=10, t=16, b=56),
     )
-    st.plotly_chart(fig5, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig5, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 with cr3:
     clabel("Division-wise Revenue Share")
@@ -563,14 +682,26 @@ with cr3:
     fig6.update_layout(**BASE_LAYOUT, height=320, showlegend=False,
         margin=DEFAULT_MARGIN,
     )
-    st.plotly_chart(fig6, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig6, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DIVISION TREND  +  HQ RANKINGS TABLE
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec("📋", "Division Trends & Territory Rankings")
+sec(SICO_DIV)
 cl4, cr4 = st.columns([1.4, 1])
 
 with cl4:
@@ -599,7 +730,19 @@ with cl4:
         hovermode="x unified",
         margin=dict(l=8, r=8, t=16, b=40),
     )
-    st.plotly_chart(fig7, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig7, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 with cr4:
     clabel("Top Head Quarters — Revenue Ranking")
@@ -629,7 +772,7 @@ with cr4:
 # ADVANCED  — Scatter  +  Dual-axis HQ
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec("🔬", "Advanced Analysis")
+sec(SICO_ADV)
 cl5, cr5 = st.columns(2)
 
 with cl5:
@@ -656,7 +799,19 @@ with cl5:
         yaxis=dict(showgrid=True, gridcolor=GRID,
                    title=dict(text="Revenue (₹)", font=dict(size=10))),
     )
-    st.plotly_chart(fig8, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig8, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 with cr5:
     clabel("Top 10 Head Qtrs — Revenue vs Qty")
@@ -686,7 +841,19 @@ with cr5:
                     bordercolor="#333", borderwidth=1),
         barmode="group",
     )
-    st.plotly_chart(fig9, width='stretch', config={"displayModeBar": False})
+    st.plotly_chart(fig9, width='stretch', config={
+            "displayModeBar": True,
+            "displaylogo": False,
+            "modeBarButtonsToRemove": [
+                "select2d","lasso2d","toggleSpikelines",
+                "hoverClosestCartesian","hoverCompareCartesian"
+            ],
+            "modeBarButtonsToAdd": ["hoverclosest","hovercompare"],
+            "toImageButtonOptions": {
+                "format": "png", "filename": "ENTOD_chart",
+                "height": 600, "width": 1200, "scale": 2
+            }
+        })
 
 
 # ══════════════════════════════════════════════════════════════════════════════
