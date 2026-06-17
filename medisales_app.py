@@ -418,7 +418,7 @@ nonzero_qty = df[df["Sales Qty"] > 0]
 avg_order_value = (nonzero_qty["Sales Amt"].sum() / nonzero_qty["Sales Qty"].sum()
                     ) if nonzero_qty["Sales Qty"].sum() else 0
 
-sec(SICO_KPI)
+sec(SICO_KPI, "Key Performance Indicators")
 cols = st.columns(6)
 kpis = [
     (ICO_REVENUE, "Total Revenue",       fmt_inr(total_amt),  "Filtered period",      ""),
@@ -468,7 +468,7 @@ st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
 # TREND  +  MoM GROWTH
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec(SICO_TREND)
+sec(SICO_TREND, "Revenue Trend & MoM Growth")
 trend = (df.groupby("Month_Period", as_index=False)["Sales Amt"]
            .sum().sort_values("Month_Period"))
 trend["Label"] = trend["Month_Period"].apply(lambda p: pd.Period(p).strftime("%b %Y"))
@@ -541,7 +541,7 @@ with cr:
 # TOP PRODUCTS  +  TOP STATES
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec(SICO_PERF)
+sec(SICO_PERF, "Top Products & States Performance")
 cl2, cr2 = st.columns(2)
 
 with cl2:
@@ -611,7 +611,7 @@ with cr2:
 # HQ BAR CHART  +  DIVISION DONUT
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec(SICO_TERR)
+sec(SICO_TERR, "Territory & Division Analysis")
 cl3, cr3 = st.columns(2)
 
 with cl3:
@@ -701,7 +701,7 @@ with cr3:
 # DIVISION TREND  +  HQ RANKINGS TABLE
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec(SICO_DIV)
+sec(SICO_DIV, "Division Trends & HQ Rankings")
 cl4, cr4 = st.columns([1.4, 1])
 
 with cl4:
@@ -772,7 +772,7 @@ with cr4:
 # ADVANCED  — Scatter  +  Dual-axis HQ
 # ══════════════════════════════════════════════════════════════════════════════
 
-sec(SICO_ADV)
+sec(SICO_ADV, "Advanced Analytics")
 cl5, cr5 = st.columns(2)
 
 with cl5:
